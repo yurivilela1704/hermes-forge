@@ -1,0 +1,17 @@
+# Local environment files
+.env
+
+# Go build/test artifacts
+server
+*.test
+*.out
+coverage.out
+
+# Editor temp files
+*.swp
+*.swo
+*~
+
+# Generated notes and local storage metadata
+output/*.md
+output/index.json
