@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hermes Forge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        [v-cloak] { display: none; }
+        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-4xl font-extrabold text-blue-600">Hermes Forge</h1>
+            <p class="text-gray-600 mt-2 text-lg">Release note generation playground</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Controls -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Sync Section -->
+                <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 border-bottom bg-gray-50">
+                        <h2 class="font-bold text-gray-700 uppercase text-xs tracking-wider">Sync Sources</h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex space-x-4 mb-4 border-b border-gray-100">
+                            <button id="tab-gitlab" class="pb-2 px-1 tab-active font-medium text-sm transition-colors">GitLab</button>
+                            <button id="tab-github" class="pb-2 px-1 text-gray-400 font-medium text-sm transition-colors hover:text-gray-600">GitHub</button>
+                        </div>
+
+                        <!-- GitLab Sync Form -->
+                        <form id="sync-form" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Project Path</label>
+                                <input id="sync-project" placeholder="namespace/project" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" required />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                                    <input id="sync-start-date" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                                    <input id="sync-end-date" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                                </div>
+                            </div>
+                            <button type="submit" id="sync-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors shadow-sm">Sync and List</button>
+                        </form>
+
+                        <!-- GitHub Sync Form (hidden by default) -->
+                        <form id="sync-github-form" class="space-y-4 hidden">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Repository</label>
+                                <input id="sync-github-repo" placeholder="owner/repo" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" required />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                                    <input id="sync-github-start-date" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                                    <input id="sync-github-end-date" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                                </div>
+                            </div>
+                            <button type="submit" id="sync-github-btn" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2 px-4 rounded-lg transition-colors shadow-sm">Sync GitHub</button>
+                        </form>
+                        
+                        <button type="button" id="send-all-btn" class="hidden w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors shadow-sm">Send ALL to AI</button>
+                    </div>
+                </section>
+
+                <!-- Generation Section -->
+                <section class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h2 class="font-bold text-gray-700 uppercase text-xs tracking-wider mb-4">Quick Actions</h2>
+                    <div class="space-y-3">
+                        <button id="daily-btn" class="w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                            <div>
+                                <span class="block font-semibold text-gray-800">Generate Daily Report</span>
+                                <span class="text-xs text-gray-500">Consolidate all merged today</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-blue-500 transition-colors" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <button id="show-manual-btn" class="w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                            <div>
+                                <span class="block font-semibold text-gray-800">Manual Entry</span>
+                                <span class="text-xs text-gray-500">Create a custom note</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-blue-500 transition-colors" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Usage Section -->
+                <section class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="font-bold text-gray-700 uppercase text-xs tracking-wider">LLM Usage</h2>
+                        <button id="refresh-usage" class="text-blue-600 hover:text-blue-800 text-xs font-semibold">Refresh</button>
+                    </div>
+                    <div class="overflow-x-auto text-[11px]">
+                        <table class="w-full text-left">
+                            <thead class="text-gray-400 border-b border-gray-100">
+                                <tr>
+                                    <th class="pb-2 font-medium">Model</th>
+                                    <th class="pb-2 font-medium">Tokens</th>
+                                    <th class="pb-2 font-medium text-right">Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usage-body" class="divide-y divide-gray-50">
+                                <!-- Usage rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Results & Content -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Manual Form (hidden usually) -->
+                <section id="manual-section" class="bg-white rounded-xl shadow-md border border-gray-200 p-6 hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-gray-800">Manual Generation</h2>
+                        <button id="close-manual-btn" class="text-gray-400 hover:text-gray-600 font-bold text-2xl">&times;</button>
+                    </div>
+                    <form id="generate-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                            <input id="title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Author</label>
+                            <input id="author" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Repository</label>
+                            <input id="repository" placeholder="org/repo" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Branch</label>
+                            <input id="branch" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea id="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Commit messages (one per line)</label>
+                            <textarea id="commits" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all shadow-lg shadow-blue-200">Generate and Save</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Sync Results -->
+                <section id="sync-results-section" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hidden">
+                    <div class="p-4 border-b bg-gray-50 flex items-center justify-between">
+                        <h2 id="sync-results-title" class="font-bold text-gray-700">Sync Results</h2>
+                        <span id="sync-results-count" class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-full">0 found</span>
+                    </div>
+                    <div id="sync-results" class="p-6 max-h-[500px] overflow-y-auto divide-y divide-gray-100">
+                        <!-- MR items -->
+                    </div>
+                </section>
+
+                <!-- Preview Area -->
+                <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 border-b bg-gray-50 flex items-center justify-between">
+                        <h2 class="font-bold text-gray-700">Preview</h2>
+                        <button id="copy-preview" class="text-xs text-blue-600 font-semibold hover:underline hidden">Copy Markdown</button>
+                    </div>
+                    <div class="p-0 bg-slate-900">
+                        <pre id="preview" class="p-6 text-blue-300 font-mono text-sm overflow-x-auto min-h-[200px] whitespace-pre-wrap text-wrap">No preview yet. Sync or generate something to see it here.</pre>
+                    </div>
+                </section>
+
+                <!-- History -->
+                <section class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-4 border-b bg-gray-50 flex items-center justify-between">
+                        <h2 class="font-bold text-gray-700 uppercase text-xs tracking-wider">Generated Notes History</h2>
+                        <button id="refresh-notes" class="text-blue-600 hover:text-blue-800 text-xs font-semibold">Refresh</button>
+                    </div>
+                    <ul id="notes-list" class="divide-y divide-gray-50">
+                        <!-- Note items -->
+                        <li class="p-8 text-center text-gray-400 text-sm">No notes found</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

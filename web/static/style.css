@@ -1,0 +1,85 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  color: #1f2937;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.subtitle {
+  margin-top: -8px;
+  color: #6b7280;
+}
+
+.sync-list {
+  list-style: none;
+  padding: 0;
+}
+
+.sync-item {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 0;
+}
+
+.sync-item:last-child {
+  border-bottom: none;
+}
+
+.sync-commits {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+}
+
+.commit-line {
+  margin-bottom: 0.2rem;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+form {
+  display: grid;
+  gap: 10px;
+}
+
+label {
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+  padding: 8px;
+}
+
+button {
+  width: fit-content;
+  cursor: pointer;
+}
+
+pre {
+  white-space: pre-wrap;
+  background: #111827;
+  color: #f9fafb;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+#notes-list {
+  padding-left: 20px;
+}
